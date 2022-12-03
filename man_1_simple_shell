@@ -1,0 +1,145 @@
+.TH HSH 0.1 "December 2022" "Cohort 18 PT" "Simple Shell"
+.SH NAME
+.B hsh
+- command interpreter (simple shell).
+.SH SYNOPSIS
+hsh [filename]
+
+.SH DESCRIPTION
+.B hsh
+is the system's default command interpreter. This man page isn't meant to serve as a guide or a comprehensive description of the shell.
+
+.B Overview
+
+The simple shell is a command that translates lines from files or the terminal and typically runs other commands after reading them. It is the application that launches as soon as a user logs in. It has the advantage of having a uniform interpretation language for both interactive and non-interactive use, as well as several capabilities to support interactive use (shell scripts). In other words, commands can be entered directly into a simple shell that is already running or they can be stored in a file that the simple shell will then execute.
+
+.B Invocation
+
+The name of a file from which to read instructions (a shell script) will be handled as the first non-option argument supplied on the command line, and the following arguments will be set as the positional parameters of the shell ($a, $c, etc.). Otherwise, the shell uses its normal input to read commands.
+
+.B Commands
+
+The specification of the language that the shell uses to comprehend the text it reads is outside the purview of this man page (please refer to the BNF in the IEEE Std 1003.2. But in essence, a line is read, and if the first word (or the word after a control operator) is not a keyword, the shell has detected a straightforward command. If not, a complicated command or some other unique construct might have been noticed.
+
+.B Search and Execution
+
+There are three different kinds of commands: standard programs, built-in commands, and straightforward shell functions. In that order, the command is looked up (by name). The three main forms of directives are all carried out in various ways.
+
+All shell positional parameters (except from $0, which doesn't change) are set to the arguments of the shell function when it is called. By adding assignments to them before the function name, variables that are expressly added to the command's environment are made local to the function and given the specified values. The function definition's command is then carried out. When the command is finished, the positional parameters are reset to their initial values. Within the existing simple shell, all of this takes place.
+
+Internally, the simple shell executes built-in commands without starting a new process. Regular and special built-in commands are the two different categories. Assignment errors, redirection errors, and some operand problems result in a script being aborted, and assignments made before special builtins linger after they have finished running. A function cannot override a special builtin. The shell can be impacted by both common and uncommon builtins in ways that conventional programs cannot.
+
+Otherwise, the command is looked up in the file system as a standard program if the name does not match a function or built-in command (as described in the next section). When a regular program is started, the shell launches the program and passes the environment and arguments to it. The shell will launch a fresh instance of to understand the program if it doesn't start with the "magic number," whose ASCII equivalent is "#!" and causes an ENOEXEC return value from execve(2), but instead seems to be a text file.
+
+.B Path Search
+
+The shell initially checks to verify if a shell function with that name already exists before locating a command. After that, it searches for a built-in command with that name. One of two situations happens when a built-in command cannot be found:
+
+1. Searches are skipped when executing commands with slashes in their names.
+
+2. The shell looks for the command by iteratively searching each entry in the PATH variable. A list of elements separated by colons should make up the value of the PATH variable. A directory name is included in each entry. An empty directory name or a single period can both directly or implicitly indicate the current directory.
+
+.B Command Exit Status
+
+The exit state of each command has an impact on how other shell commands behave. The paradigm is that a command ends with a zero if it is successful or normal and a non-zero if it fails, makes a mistake, or gives a false indication. The various exit codes and their meanings should be listed on the man page for each command. Additionally, shell functions and built-in commands both produce exit codes.
+
+A command's exit status is larger than 128 if it is terminated by a signal. By supplying the exit status to kill -l, it is possible to determine the signal name.
+
+If there is no command word, the exit status is either zero if there are no command substitutions, or it is the exit status of the last command substitution that was executed.
+
+.SH ENVIRONMENT
+Environment variables have an impact on how
+.B sh
+:
+
+     ENV    For interactive shells, an initialization file.
+
+.SH EXIT STATUS
+
+The shell will terminate with a non-zero exit status when it detects errors, such as syntax errors. The execution of the shell file will be stopped if the shell is not an interactive shell. If the built-in is used with a numeric argument, the shell will return the argument; otherwise, it will return the exit status of the most recent command that was run.
+
+.B exit
+If the built-in is used with a numeric argument, the shell will return the argument; otherwise, it will return the exit status of the most recent command that was run.
+
+.SH EXAMPLES
+Here is an illustration of interactive mode:
+
+.RS +4
+$ ./hsh
+.RE
+.RS +4
+($) /usr/bin/ls
+.RE
+.RS +4
+hsh main.c shell.c
+.RE
+.RS +4
+($)
+.RE
+.RS +4
+($) exit
+.RE
+.RS +4
+$
+
+.RE
+Another illustration of non-interactive mode:
+
+.RS +4
+$ echo "/usr/bin/ls" | ./hsh
+.RE
+.RS +4
+hsh main.c shell.c test_ls
+.RE
+.RS +4
+$
+.RE
+.RS +4
+$ cat test_ls
+.RE
+.RS +4
+/bin/ls
+.RE
+.RS +4
+/bin/ls
+.RE
+.RS +4
+$
+.RE
+.RS +4
+$ cat test_ls | ./hsh
+.RE
+.RS +4
+hsh main.c shell.c test_ls
+.RE
+.RS +4
+hsh main.c shell.c test_ls
+.RE
+.RS +4
+$
+.PP
+
+.SH FILES
+     $HOME/.profile            User's login profile.
+     /etc/profile            System login profile.
+
+.SH SEE ALSO
+builtin(1), csh(1), echo(1), getopt(1), ksh(1), login(1), printf(1), test(1), getopt(3), passwd(5), profile(4), environ(7), execve(2), sysctl(8).
+
+.SH HISTORY
+.B hsh
+is a minimal /bin/sh implementation that adheres to POSIX standards.
+.B hsh
+is a child of the first
+.B sh
+version of Unix created by Ken Thompson in AT&T Bell Laboratories and released as Version 1 AT&T UNIX in 1971. After the Bourne shell
+.B sh
+from AT&T System V Release 4 UNIX, which took on the moniker, that version was redone in 1989 under the BSD license.
+.B sh.
+Even though it was just a straightforward command interpreter without any support for scripting, it made some ground-breaking additions to the command-line interface and paved the way for the creation of later Unix shells.
+
+.SH BUGS
+Bugs are present.
+
+.SH AUTHORS
+Abigail Castro Figueroa & Alberto Cepeda Rivas
