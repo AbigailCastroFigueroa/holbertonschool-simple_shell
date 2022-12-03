@@ -22,28 +22,30 @@ int main(int ac, char **argv, char **env)
 		_puts("$ ");
 		char_read = getline(&user_input, &n, stdin);
 		if (char_read == -1)
+		{
+			free(user_input);
 			return (-1);
+		}
 		input_copy = malloc(sizeof(char) * char_read);
 		if (input_copy == NULL)
 		{
-			perror("tsh: memory allocation error");
+			perror("memory allocation error");
 			return (-1);
 		}
 		_strcpy(input_copy, user_input);
-		token = strtok(user_input, input_copy);
+		token = strtok(user_input, delim);
 		while (token != NULL)
 		{
 			total_tokens++;
 			token = strtok(NULL, delim);
 		}
 		total_tokens++;
-		argv = malloc(sizeof(char *) * total_tokens);
+		argv = malloc(sizeof(char *) * total_tokens) ;
 		token  = strtok(input_copy, delim);
 		for (i = 0; token != NULL; i++)
 		{
 			argv[i] = malloc(sizeof(char) * strlen(token) + 1);
 			_strcpy(argv[i], token);
-			token = NULL;
 			token = strtok(NULL, delim);
 		}
 		argv[i] = NULL;
@@ -70,7 +72,7 @@ int main(int ac, char **argv, char **env)
 		else
 		wait(&status);
 	}
-	free(argv);
+	free_args(argv);
 	free(input_copy);
 	free(user_input);
 	return (0);
