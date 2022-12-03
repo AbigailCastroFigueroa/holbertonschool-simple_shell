@@ -53,7 +53,7 @@ the address where the leak is and a posible reason. Sometime it's hard to unders
 > gcc -Wall -Werror -Wextra -pedantic -std=gnu89 -g *.c -o hsh
 
 ## Project Tasks
-As part of the tasks for this project the shell should work in an non-interactive way and an interactive way. The non-interactive way is through pipes or redirections. The interactive way should work similar to the shell that we uaccess through our terminal.
+As part of the tasks for this project the shell should work in an non-interactive way and an interactive way. The non-interactive way is through pipes or redirections. The interactive way should work similar to the shell that we access through our terminal.
 
 ## Our simple shell version
 It run some commands, and work mostly in the interactive mode. Only runs commands related to the path in the non-interactive mode. Still have leaks, it doesn't handle errors all the way through.
