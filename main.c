@@ -33,7 +33,7 @@ int main(int ac, char **argv, char **env)
 			return (-1);
 		}
 		_strcpy(input_copy, user_input);
-		token = strtok(user_input, delim);
+		token = strtok(user_input, input_copy);
 		while (token != NULL)
 		{
 			total_tokens++;
